@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tasks Management System</title>
+    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:switch="${tasks}">
+    <h2 th:case="null">No tasks assigned!</h2>
+    <div th:case="*">
+        <h1><span th:text="${appName}"></span></h1>
+        <h2>Tasks</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.id}"></td>
+                <td th:text="${task.name}"></td>
+                <td><a th:href="@{/edit/task/{id}(id=${item.id})}">Edit</a></td>
+                <td><a th:href="@{/delete/task/{id}(id=${item.id})}">Delete</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p><a href="/addtaskform">Add new task</a></p>
+</div>
+</body>
+</html>
