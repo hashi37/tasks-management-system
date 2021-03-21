@@ -16,12 +16,14 @@ public class Task implements Serializable {
     private int id;
     private String name;
     private String description;
-    private String taskState;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "state_id", nullable = true)
+    private TaskState state;
 
     public int getId() {
         return id;
@@ -47,19 +49,24 @@ public class Task implements Serializable {
         this.description = description;
     }
 
-    public String getTaskState() {
-        return taskState;
-    }
-
-    public void setTaskState(String taskState) {
-        this.taskState = taskState;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public TaskState getState() {
+        return state;
+    }
+
+    public void setState(TaskState state) {
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "Task: id="+id+", name="+name+", state="+state+", user="+user;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head><title>Error Occurred</title></head>
 <body>
 <h1>Error Occurred!</h1>
@@ -8,4 +8,8 @@
 </b>
 <p th:text="${message}">message</p>
 </body>
+
+<a href="index.html" th:href="@{/index}">Back to Home Page</a>
+</body>
+
 </html>

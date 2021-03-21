@@ -15,10 +15,15 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    private String userType;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_type_id", nullable = true)
+    private UserType userType;
     private String userLogin;
-    @OneToMany(mappedBy="user")
+
+    @OneToMany(mappedBy="user", cascade = CascadeType.MERGE)
     private Set<Task> tasks;
+
 
     public int getId() {
         return id;
@@ -28,11 +33,11 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getUserType() {
+    public UserType getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserType userType) {
         this.userType = userType;
     }
 
@@ -50,5 +55,10 @@ public class User implements Serializable {
 
     public void setTasks(Set<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @Override
+    public String toString() {
+        return "User: id="+id+", userLogin="+userLogin+", userType="+userType;
     }
 }
