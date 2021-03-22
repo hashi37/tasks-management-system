@@ -35,13 +35,18 @@ public class DataLoader implements ApplicationRunner {
         leader.setUserType(userTypeLeader);
         leader.setUserLogin("leader");
 
-        User user = new User();
-        user.setUserType(userTypeEmployee);
-        user.setUserLogin("user");
+        User user1 = new User();
+        user1.setUserType(userTypeEmployee);
+        user1.setUserLogin("user1");
+
+        User user2 = new User();
+        user2.setUserType(userTypeEmployee);
+        user2.setUserLogin("user2");
 
         tasksManagementDatabase.createNewUser(admin);
         tasksManagementDatabase.createNewUser(leader);
-        tasksManagementDatabase.createNewUser(user);
+        tasksManagementDatabase.createNewUser(user1);
+        tasksManagementDatabase.createNewUser(user2);
 
         Task task1 = new Task();
         task1.setState(TasksManagementDatabase.TASK_STATE_NEW);
@@ -57,7 +62,7 @@ public class DataLoader implements ApplicationRunner {
         task2.setDescription("Task2 in progress");
         task2.setName("Task2");
 
-        task2.setUser(user);
+        task2.setUser(user1);
 
         tasksManagementDatabase.createNewTask(task2);
 
@@ -71,8 +76,8 @@ public class DataLoader implements ApplicationRunner {
         tasksManagementDatabase.createNewTask(task3);
 
         //System.out.println(tasksManagementDatabase.getAllTasks());
-        System.out.println(tasksManagementDatabase.getAllTasksForUser(leader));
-        System.out.println(tasksManagementDatabase.getAllTasksForUser(user));
+        //System.out.println(tasksManagementDatabase.getAllTasksForUser(leader));
+        //System.out.println(tasksManagementDatabase.getAllTasksForUser(user1));
 
     }
 }

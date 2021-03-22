@@ -3,6 +3,7 @@ package com.wszib.tasks.web;
 import com.wszib.tasks.database.TasksManagementDatabase;
 import com.wszib.tasks.model.Task;
 import com.wszib.tasks.model.User;
+import com.wszib.tasks.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 
 @Controller
@@ -108,8 +111,9 @@ public class SimpleController {
     public String showAssignUserForm(@PathVariable("id") int id, Model model) {
         Task task = tasksManagementDatabase.getTaskById(id);
         System.out.println("showAssignUserForm Task="+task);
-
+        List users = tasksManagementDatabase.getUserListByUserType(UserType.USER_TYPE_USER);
         model.addAttribute("task", task);
+        model.addAttribute("users", users);
         return "assign-task";
     }
 

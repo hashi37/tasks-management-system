@@ -10,6 +10,10 @@ import java.io.Serializable;
 @Table(name = "usertype")
 public class UserType implements Serializable {
 
+    public static String USER_TYPE_ADMIN = "ADMIN";
+    public static String USER_TYPE_LEADER = "LEADER";
+    public static String USER_TYPE_USER = "USER";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

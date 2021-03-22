@@ -3,7 +3,6 @@ package com.wszib.tasks.database;
 import com.wszib.tasks.model.Task;
 import com.wszib.tasks.model.User;
 import com.wszib.tasks.model.UserType;
-import org.hibernate.Session;
 
 import java.util.List;
 
@@ -28,5 +27,5 @@ public interface TasksManagementDatabase {
     List getAllTasks();
     List getAllTasksForUser(User user);
     List getAllTasksForUserLogin(String userLogin);
-    List getUserListByUserType(String userType, Session session);
+    List getUserListByUserType(String userType);
 }

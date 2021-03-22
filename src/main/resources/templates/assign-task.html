@@ -30,7 +30,16 @@
 
 <form action="#" th:action="@{/assignuser/}" th:object="${task}" method="post">
     <label>New user name</label>
-    <input type="text" th:field="*{user.userLogin}" />
+    <!-input type="text" th:field="*{user.userLogin}" /-->
+
+    <select class="form-control" id="userLogin" name="userLogin" th:field="*{user.userLogin}">
+        <option value="">Select user</option>
+        <option th:each="user : ${users}"
+                th:value="${user.userLogin}"
+                th:text="${user.userLogin}+' : '+${user.userLogin}"
+                th:field="*{user.userLogin}"></option>
+    </select>
+
     <input type="hidden" th:field="*{id}" />
     <input type="submit" value="Submit" />
 </form>

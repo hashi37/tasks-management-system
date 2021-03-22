@@ -109,12 +109,13 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         session.update(task);
         session.flush() ;
         tx.commit();
-        System.out.println("TasksManagementDatabaseImpl startTask: "+id);
+        System.out.println("TasksManagementDatabaseImpl doneTask: "+id);
     }
 
     @Override
     @Transactional(propagation= Propagation.NOT_SUPPORTED)
     public void assignTaskWithIdToUser(int id, String userLogin) {
+        System.out.println("TasksManagementDatabaseImpl assignTaskWithIdToUser");
         Session session = this.sessionFactory.openSession();
 
         User user = getUserByUserLogin(userLogin, session);
@@ -207,7 +208,7 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
 
     @Override
     public List getAllTasksForUserLogin(String userLogin) {
-        System.out.println("TasksManagementDatabaseImpl getAllTasksForUserName userLogin="+userLogin);
+        System.out.println("TasksManagementDatabaseImpl getAllTasksForUserLogin userLogin="+userLogin);
         List<Task> taskList;
         Session session = this.sessionFactory.openSession();
 
@@ -219,9 +220,8 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         return taskList;
     }
 
-    @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
     private User getUserByUserLogin(String userLogin, Session session){
-        System.out.println("TasksManagementDatabaseImpl getUserById");
+        System.out.println("TasksManagementDatabaseImpl getUserByUserLogin");
         User user;
 
         String hql = "from User u WHERE u.userLogin = : userLogin";
@@ -231,22 +231,35 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         user = (User)query.uniqueResult();
 
         return user;
-
     }
 
     @Override
     @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
-    public List getUserListByUserType(String userType, Session session){
-        System.out.println("TasksManagementDatabaseImpl getUserById");
+    public List getUserListByUserType(String userTypeString){
+        Session session = this.sessionFactory.openSession();
+        System.out.println("TasksManagementDatabaseImpl getUserListByUserType");
         List<Task> userList;
 
-        String hql = "from User u WHERE u.UserType.type = : userType";
+        String hql = "from User as user WHERE user.userType.type = :userType";
         Query query = session.createQuery(hql);
-        query.setParameter("userType", userType);
+        query.setParameter("userType", UserType.USER_TYPE_USER);
 
         userList = query.list();
 
         return userList;
-
     }
+
+    private UserType getUserTypeByType(String userTypeString, Session session){
+        System.out.println("TasksManagementDatabaseImpl getUserTypeByType");
+        UserType userType;
+
+        String hql = "from UserType u WHERE u.type = : userType";
+        Query query = session.createQuery(hql);
+        query.setParameter("userType", userTypeString);
+
+        userType = (UserType)query.uniqueResult();
+
+        return userType;
+    }
+
 }
