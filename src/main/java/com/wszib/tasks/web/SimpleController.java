@@ -5,10 +5,16 @@ import com.wszib.tasks.model.Task;
 import com.wszib.tasks.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
@@ -38,13 +44,16 @@ public class SimpleController {
     public String homePage(Model model) {
         model.addAttribute("appName", appName);
         return "redirect:/index";
-        //return "redirect:/login";
     }
 
     @GetMapping("/index")
     public String prepareIndexPageContent(Model model) {
+        String currentUser = getCurrentUserName();
+        System.out.println("Logged in user="+currentUser);
+
         model.addAttribute("appName", appName);
-        model.addAttribute("tasks", tasksManagementDatabase.getAllTasks());
+        model.addAttribute("alltasks", tasksManagementDatabase.getAllTasks());
+        model.addAttribute("tasks", tasksManagementDatabase.getAllTasksForUserLogin(currentUser));
         return "index";
     }
 
@@ -55,11 +64,11 @@ public class SimpleController {
 
     @PostMapping("/addtask")
     public String addNewTask(@ModelAttribute("task") Task task, BindingResult result, Model model) {
-        model.addAttribute("task", new Task());
+        //model.addAttribute("task", new Task());
         if (result.hasErrors()) {
             return "add-task";
         }
-        //warehouseDatabase.addNewItem(item);
+        tasksManagementDatabase.createNewTask(task);
         return "redirect:/index";
     }
 
@@ -81,6 +90,24 @@ public class SimpleController {
     @GetMapping("/delete/task/{id}")
     public String deleteTaskById(@PathVariable("id") int id, Model model) {
         tasksManagementDatabase.deleteTaskById(id);
+        return "redirect:/index";
+    }
+
+    @GetMapping("/start/task/{id}")
+    public String startTaskById(@PathVariable("id") int id, Model model) {
+        tasksManagementDatabase.startTask(id);
+        return "redirect:/index";
+    }
+
+    @GetMapping("/done/task/{id}")
+    public String doneTaskById(@PathVariable("id") int id, Model model) {
+        tasksManagementDatabase.doneTask(id);
+        return "redirect:/index";
+    }
+
+    @GetMapping("/assign/task/{id}/{userLogin}")
+    public String assignTaskById(@PathVariable("id") int id, @PathVariable("userLogin") String userLogin, Model model) {
+        tasksManagementDatabase.doneTask(id);
         return "redirect:/index";
     }
 
@@ -142,5 +169,15 @@ public class SimpleController {
         return task;
     }
 
+
+    private String getCurrentUserName(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = "";
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            currentUserName = authentication.getName();
+        }
+
+        return currentUserName;
+    }
 
 }

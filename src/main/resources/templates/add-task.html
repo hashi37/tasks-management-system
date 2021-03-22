@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Baza danych</title>
+    <title>Add new task</title>
     <link th:href="@{/styles/style.css}" rel="stylesheet" />
 </head>
 <body>
 
 <form action="#" th:action="@{/addtask}" th:object="${task}" method="post">
-    <label for="name">Nazwa</label>
-    <input type="text" th:field="*{name}" id="name" placeholder="Nazwa">
+    <label for="name">Name</label>
+    <input type="text" th:field="*{name}" id="name" placeholder="Name...">
     <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-    <input type="submit" value="Dodaj">
+    <br><br>
+    <label for="name">Description</label>
+    <textarea rows="4" cols="50" th:field="*{description}" id="description" name="description"></textarea>
+    <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+    <br><br>
+    <input type="submit" value="Add">
 </form>
 
 </body>

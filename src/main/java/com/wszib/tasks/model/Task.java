@@ -18,12 +18,10 @@ public class Task implements Serializable {
     private String description;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name="user_id", nullable=true)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "state_id", nullable = true)
-    private TaskState state;
+    private String state;
 
     public int getId() {
         return id;
@@ -57,11 +55,11 @@ public class Task implements Serializable {
         this.user = user;
     }
 
-    public TaskState getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(TaskState state) {
+    public void setState(String state) {
         this.state = state;
     }
 

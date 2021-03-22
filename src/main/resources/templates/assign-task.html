@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task</title>
+    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>State</th>
+        <th>User assigned</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.id}"></td>
+        <td th:text="${task.name}"></td>
+        <td th:text="${task.description}"></td>
+        <td th:text="${task.state}"></td>
+        <td th:text="${task.user.userLogin}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<form action="#" th:action="@{/assign/task/{id}(id=${task.id})/{userLogin}(userLogin=${task.id})}" th:object="${task}" method="post">
+    <label for="name">User login</label>
+    <input type="text" th:field="*{name}" id="name" placeholder="UserLogin">
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+    <input type="submit" value="Assign">
+</form>
+
+</body>
+</html>

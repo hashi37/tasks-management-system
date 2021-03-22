@@ -1,7 +1,6 @@
 package com.wszib.tasks.database;
 
 import com.wszib.tasks.model.Task;
-import com.wszib.tasks.model.TaskState;
 import com.wszib.tasks.model.User;
 import com.wszib.tasks.model.UserType;
 import org.hibernate.Session;
@@ -33,20 +32,13 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
     public void createNewTask(Task task) {
         Session session = this.sessionFactory.getCurrentSession();
         Transaction tx = session.beginTransaction();
+
+
         session.saveOrUpdate(task);
         tx.commit();
         System.out.println("TasksManagementDatabaseImpl createNewTask: " + task);
     }
 
-    @Override
-    @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
-    public void createNewTaskState(TaskState taskState) {
-        Session session = this.sessionFactory.getCurrentSession();
-        Transaction tx = session.beginTransaction();
-        session.saveOrUpdate(taskState);
-        tx.commit();
-        System.out.println("TasksManagementDatabaseImpl createNewTaskState: " + taskState);
-    }
 
     @Override
     @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
@@ -88,6 +80,53 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         session.update(user);
         session.flush() ;
         tx.commit();
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.NOT_SUPPORTED)
+    public void startTask(int id) {
+        Session session = this.sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        Task task ;
+
+        task = session.load(Task.class,id);
+        task.setState(TasksManagementDatabase.TASK_STATE_IN_PROGRESS);
+        session.update(task);
+        session.flush() ;
+        tx.commit();
+        System.out.println("TasksManagementDatabaseImpl startTask: "+id);
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.NOT_SUPPORTED)
+    public void doneTask(int id) {
+        Session session = this.sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        Task task ;
+
+        task = session.load(Task.class,id);
+        task.setState(TasksManagementDatabase.TASK_STATE_DONE);
+        session.update(task);
+        session.flush() ;
+        tx.commit();
+        System.out.println("TasksManagementDatabaseImpl startTask: "+id);
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.NOT_SUPPORTED)
+    public void assignTaskWithIdToUser(int id, String userLogin) {
+        Session session = this.sessionFactory.openSession();
+
+        User user = getUserByUserLogin(userLogin, session);
+        Task task = session.load(Task.class,id);
+
+        task.setUser(user);
+
+        Transaction tx = session.beginTransaction();
+        session.update(task);
+        session.flush() ;
+        tx.commit();
+
     }
 
     @Override
@@ -143,10 +182,12 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
     @Override
     @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
     public List getAllTasks() {
-        System.out.println("TasksManagementDatabaseImpl getAllTasks");
         List<Task> taskList;
         Session session = this.sessionFactory.getCurrentSession();
         taskList = session.createQuery("from Task").list();
+
+        System.out.println("TasksManagementDatabaseImpl getAllTasks: "+taskList);
+
         return taskList;
     }
 
@@ -155,7 +196,7 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
     public List getAllTasksForUser(User user) {
         System.out.println("TasksManagementDatabaseImpl getAllTasksForUser");
         List<Task> taskList;
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.sessionFactory.openSession();
 
         String hql = "from Task t WHERE t.user = :user";
         Query query = session.createQuery(hql);
@@ -163,5 +204,34 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         taskList = query.list();
 
         return taskList;
+    }
+
+    @Override
+    public List getAllTasksForUserLogin(String userLogin) {
+        System.out.println("TasksManagementDatabaseImpl getAllTasksForUserName userLogin="+userLogin);
+        List<Task> taskList;
+        Session session = this.sessionFactory.openSession();
+
+        String hql = "from Task t WHERE t.user.userLogin = : userLogin";
+        Query query = session.createQuery(hql);
+        query.setParameter("userLogin",userLogin);
+        taskList = query.list();
+
+        return taskList;
+    }
+
+    @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
+    private User getUserByUserLogin(String userLogin, Session session){
+        System.out.println("TasksManagementDatabaseImpl getUserById");
+        User user;
+
+        String hql = "from User u WHERE u.userLogin = : userLogin";
+        Query query = session.createQuery(hql);
+        query.setParameter("userLogin",userLogin);
+
+        user = (User)query.uniqueResult();
+
+        return user;
+
     }
 }

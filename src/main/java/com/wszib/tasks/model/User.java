@@ -19,6 +19,7 @@ public class User implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_type_id", nullable = true)
     private UserType userType;
+
     private String userLogin;
 
     @OneToMany(mappedBy="user", cascade = CascadeType.MERGE)
