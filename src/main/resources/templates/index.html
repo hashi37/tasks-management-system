@@ -71,7 +71,7 @@
                 <td th:text="${task.description}"></td>
                 <td th:text="${task.state}"></td>
                 <td th:text="${task.user != null} ? ${task.user.userLogin}"></td>
-                <td><a th:href="@{/assign/task/{id}(id=${task.id})}">Assign</a></td>
+                <td><a th:href="@{/assignuserform/{id}(id=${task.id})}">Assign</a></td>
             </tr>
             </tbody>
         </table>

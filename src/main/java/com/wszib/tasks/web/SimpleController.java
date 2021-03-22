@@ -64,7 +64,6 @@ public class SimpleController {
 
     @PostMapping("/addtask")
     public String addNewTask(@ModelAttribute("task") Task task, BindingResult result, Model model) {
-        //model.addAttribute("task", new Task());
         if (result.hasErrors()) {
             return "add-task";
         }
@@ -105,11 +104,30 @@ public class SimpleController {
         return "redirect:/index";
     }
 
-    @GetMapping("/assign/task/{id}/{userLogin}")
-    public String assignTaskById(@PathVariable("id") int id, @PathVariable("userLogin") String userLogin, Model model) {
-        tasksManagementDatabase.doneTask(id);
+    @GetMapping("/assignuserform/{id}")
+    public String showAssignUserForm(@PathVariable("id") int id, Model model) {
+        Task task = tasksManagementDatabase.getTaskById(id);
+        System.out.println("showAssignUserForm Task="+task);
+
+        model.addAttribute("task", task);
+        return "assign-task";
+    }
+
+    @PostMapping("/assignuser/")
+    public String assignUserToTask(@ModelAttribute("task") Task task, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "assign-task";
+        }
+
+        int taskId = task.getId();
+        String userLogin = task.getUser().getUserLogin();
+
+        System.out.println("assignUserToTask with taskId="+taskId+"and userLogin="+userLogin);
+
+        tasksManagementDatabase.assignTaskWithIdToUser(taskId, userLogin);
         return "redirect:/index";
     }
+
 
     @GetMapping("/delete/user/{id}")
     public String deleteUserById(@PathVariable("id") int id, Model model) {
@@ -133,7 +151,6 @@ public class SimpleController {
             return "update-task";
         }
 
-        //warehouseDatabase.saveItem(item);
         tasksManagementDatabase.saveUpdatedTask(task);
         return "redirect:/index";
     }

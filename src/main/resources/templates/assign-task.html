@@ -17,7 +17,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="task : ${tasks}">
+    <tr>
         <td th:text="${task.id}"></td>
         <td th:text="${task.name}"></td>
         <td th:text="${task.description}"></td>
@@ -27,11 +27,12 @@
     </tbody>
 </table>
 
-<form action="#" th:action="@{/assign/task/{id}(id=${task.id})/{userLogin}(userLogin=${task.id})}" th:object="${task}" method="post">
-    <label for="name">User login</label>
-    <input type="text" th:field="*{name}" id="name" placeholder="UserLogin">
-    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-    <input type="submit" value="Assign">
+
+<form action="#" th:action="@{/assignuser/}" th:object="${task}" method="post">
+    <label>New user name</label>
+    <input type="text" th:field="*{user.userLogin}" />
+    <input type="hidden" th:field="*{id}" />
+    <input type="submit" value="Submit" />
 </form>
 
 </body>

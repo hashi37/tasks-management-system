@@ -126,7 +126,6 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         session.update(task);
         session.flush() ;
         tx.commit();
-
     }
 
     @Override
@@ -134,7 +133,7 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
     public Task getTaskById(int id) {
         System.out.println("TasksManagementDatabaseImpl getTaskById");
         Task task;
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.sessionFactory.openSession();
         task = session.load(Task.class,id);
         return task;
     }
@@ -232,6 +231,22 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         user = (User)query.uniqueResult();
 
         return user;
+
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation= Propagation.NOT_SUPPORTED)
+    public List getUserListByUserType(String userType, Session session){
+        System.out.println("TasksManagementDatabaseImpl getUserById");
+        List<Task> userList;
+
+        String hql = "from User u WHERE u.UserType.type = : userType";
+        Query query = session.createQuery(hql);
+        query.setParameter("userType", userType);
+
+        userList = query.list();
+
+        return userList;
 
     }
 }
