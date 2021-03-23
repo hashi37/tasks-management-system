@@ -76,19 +76,14 @@ public class DataLoader implements ApplicationRunner {
         tasksManagementDatabase.createNewTask(task2);
 
         Task task3 = new Task();
-        task3.setState(TasksManagementDatabase.TASK_STATE_DONE);
-        task3.setDescription("Task3 done");
+        task3.setState(TasksManagementDatabase.TASK_STATE_NEW);
+        task3.setDescription("Task3 new");
         task3.setName("Task3");
 
         task3.setUser(leader);
         task3.setLeaderUserLogin(leader.getUserLogin());
 
-
         tasksManagementDatabase.createNewTask(task3);
-
-        //System.out.println(tasksManagementDatabase.getAllTasks());
-        //System.out.println(tasksManagementDatabase.getAllTasksForUser(leader));
-        //System.out.println(tasksManagementDatabase.getAllTasksForUser(user1));
 
     }
 }
