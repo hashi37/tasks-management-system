@@ -70,7 +70,8 @@ public class SimpleController {
         if (result.hasErrors()) {
             return "add-task";
         }
-        tasksManagementDatabase.createNewTask(task);
+        task.setState(TasksManagementDatabase.TASK_STATE_NEW);
+        tasksManagementDatabase.createNewTaskForUser(task, getCurrentUserName());
         return "redirect:/index";
     }
 
@@ -110,7 +111,7 @@ public class SimpleController {
     @GetMapping("/assignuserform/{id}")
     public String showAssignUserForm(@PathVariable("id") int id, Model model) {
         Task task = tasksManagementDatabase.getTaskById(id);
-        System.out.println("showAssignUserForm Task="+task);
+        //System.out.println("showAssignUserForm Task="+task);
         List users = tasksManagementDatabase.getUserListByUserType(UserType.USER_TYPE_USER);
         model.addAttribute("task", task);
         model.addAttribute("users", users);

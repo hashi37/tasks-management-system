@@ -13,6 +13,7 @@ public interface TasksManagementDatabase {
     public static String TASK_STATE_DONE = "DONE";
 
     void createNewTask(Task task);
+    void createNewTaskForUser(Task task, String userLogin);
     void createNewUser(User user);
     void createNewUserType(UserType userType);
     void saveUpdatedTask(Task task);
