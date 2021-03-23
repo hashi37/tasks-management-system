@@ -20,7 +20,7 @@ public interface TasksManagementDatabase {
     void saveUpdatedUser(User user);
     void startTask(int id);
     void doneTask(int id);
-    void assignTaskWithIdToUser(int id, String userLogin);
+    void assignTaskWithIdToUser(int id, String userLogin, String currentLeader);
     Task getTaskById(int id);
     User getUserById(int id);
     void deleteTaskById(int id);

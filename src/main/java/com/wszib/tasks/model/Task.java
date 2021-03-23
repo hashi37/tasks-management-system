@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Component
 @Entity
@@ -22,6 +23,19 @@ public class Task implements Serializable {
     private User user;
 
     private String state;
+
+    @Basic
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date startTaskTime;
+
+    @Basic
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date stopTaskTime;
+
+    @Transient
+    private String taskDuration;
+
+    private String leaderUserLogin;
 
     public int getId() {
         return id;
@@ -61,6 +75,38 @@ public class Task implements Serializable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public Date getStartTaskTime() {
+        return startTaskTime;
+    }
+
+    public void setStartTaskTime(Date startTaskTime) {
+        this.startTaskTime = startTaskTime;
+    }
+
+    public Date getStopTaskTime() {
+        return stopTaskTime;
+    }
+
+    public void setStopTaskTime(Date stopTaskTime) {
+        this.stopTaskTime = stopTaskTime;
+    }
+
+    public String getTaskDuration() {
+        return taskDuration;
+    }
+
+    public void setTaskDuration(String taskDuration) {
+        this.taskDuration = taskDuration;
+    }
+
+    public String getLeaderUserLogin() {
+        return leaderUserLogin;
+    }
+
+    public void setLeaderUserLogin(String leaderUserLogin) {
+        this.leaderUserLogin = leaderUserLogin;
     }
 
     @Override

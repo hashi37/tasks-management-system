@@ -8,6 +8,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+
 @Component
 public class DataLoader implements ApplicationRunner {
 
@@ -54,6 +56,8 @@ public class DataLoader implements ApplicationRunner {
         task1.setName("Task1");
 
         task1.setUser(leader);
+        task1.setLeaderUserLogin(leader.getUserLogin());
+
 
         tasksManagementDatabase.createNewTask(task1);
 
@@ -63,6 +67,11 @@ public class DataLoader implements ApplicationRunner {
         task2.setName("Task2");
 
         task2.setUser(user1);
+        task2.setLeaderUserLogin(leader.getUserLogin());
+
+        //set current time to start time
+        Timestamp startTaskTime = new Timestamp(System.currentTimeMillis());
+        task2.setStartTaskTime(startTaskTime);
 
         tasksManagementDatabase.createNewTask(task2);
 
@@ -72,6 +81,8 @@ public class DataLoader implements ApplicationRunner {
         task3.setName("Task3");
 
         task3.setUser(leader);
+        task3.setLeaderUserLogin(leader.getUserLogin());
+
 
         tasksManagementDatabase.createNewTask(task3);
 

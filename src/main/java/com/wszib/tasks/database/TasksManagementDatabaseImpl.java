@@ -3,6 +3,7 @@ package com.wszib.tasks.database;
 import com.wszib.tasks.model.Task;
 import com.wszib.tasks.model.User;
 import com.wszib.tasks.model.UserType;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Component("tasksManagementDatabase")
@@ -45,6 +47,7 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
 
         User user = getUserByUserLogin(userLogin, session);
         task.setUser(user);
+
         session.saveOrUpdate(task);
         tx.commit();
         //session.flush();
@@ -104,6 +107,11 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         Task task ;
         task = session.load(Task.class,id);
         task.setState(TasksManagementDatabase.TASK_STATE_IN_PROGRESS);
+
+        //set current time to start time
+        Timestamp startTaskTime = new Timestamp(System.currentTimeMillis());
+        task.setStartTaskTime(startTaskTime);
+
         session.update(task);
         tx.commit();
         //session.flush();
@@ -119,6 +127,15 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
 
         task = session.load(Task.class,id);
         task.setState(TasksManagementDatabase.TASK_STATE_DONE);
+
+        //reassign to leader
+        User user = getUserByUserLogin(task.getLeaderUserLogin(), session);
+        task.setUser(user);
+
+        //set current time to start time
+        Timestamp stopTaskTime = new Timestamp(System.currentTimeMillis());
+        task.setStopTaskTime(stopTaskTime);
+
         session.update(task);
         tx.commit();
         //session.flush();
@@ -127,14 +144,16 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
     }
 
     @Override
-    public void assignTaskWithIdToUser(int id, String userLogin) {
+    public void assignTaskWithIdToUser(int id, String userLogin, String currentLeader) {
         System.out.println("TasksManagementDatabaseImpl assignTaskWithIdToUser");
         Session session = this.sessionFactory.openSession();
 
         User user = getUserByUserLogin(userLogin, session);
+        User leader = getUserByUserLogin(currentLeader, session);
         Task task = session.load(Task.class,id);
 
         task.setUser(user);
+        task.setLeaderUserLogin(leader.getUserLogin());
 
         Transaction tx = session.beginTransaction();
         session.update(task);
@@ -203,7 +222,8 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         //session.flush();
         session.close();
         System.out.println("TasksManagementDatabaseImpl getAllTasks: "+taskList);
-        return taskList;
+
+        return calculateDurationOfTasks(taskList);
     }
 
     @Override
@@ -218,7 +238,8 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         taskList = query.list();
         //session.flush();
         session.close();
-        return taskList;
+
+        return calculateDurationOfTasks(taskList);
     }
 
     @Override
@@ -233,7 +254,8 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         taskList = query.list();
         //session.flush();
         session.close();
-        return taskList;
+
+        return calculateDurationOfTasks(taskList);
     }
 
     private User getUserByUserLogin(String userLogin, Session session){
@@ -277,4 +299,26 @@ public class TasksManagementDatabaseImpl implements TasksManagementDatabase {
         return userType;
     }
 
+    private List<Task> calculateDurationOfTasks(List<Task> taskList){
+        //calculate duration time
+        long durationInMillis;
+        for (Task task: taskList){
+            if(task.getStartTaskTime() != null){
+                if(task.getStopTaskTime() == null){
+                    //use now as stop time to have current duration
+                    task.setStopTaskTime(new Timestamp(System.currentTimeMillis()));
+                }
+
+                durationInMillis = task.getStopTaskTime().getTime() - task.getStartTaskTime().getTime();
+
+                String taskDuration = DurationFormatUtils.formatDuration(durationInMillis, "H:mm:ss", true);
+
+                task.setTaskDuration(taskDuration);
+            } else{
+                task.setTaskDuration("-");
+            }
+        }
+
+        return taskList;
+    }
 }

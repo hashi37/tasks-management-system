@@ -126,10 +126,10 @@ public class SimpleController {
 
         int taskId = task.getId();
         String userLogin = task.getUser().getUserLogin();
-
+        String currentLeader = getCurrentUserName();
         System.out.println("assignUserToTask with taskId="+taskId+"and userLogin="+userLogin);
 
-        tasksManagementDatabase.assignTaskWithIdToUser(taskId, userLogin);
+        tasksManagementDatabase.assignTaskWithIdToUser(taskId, userLogin, currentLeader);
         return "redirect:/index";
     }
 
