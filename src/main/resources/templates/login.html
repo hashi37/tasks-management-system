@@ -1,20 +1,38 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Please login to Tasks Management System</title>
-    <link th:href="@{/styles/style.css}" rel="stylesheet" />
-</head>
-<body>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-<h1>Login page</h1>
+    <title>Tasks Management System</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <!-- Custom styles for this template -->
+    <link th:rel="stylesheet" th:href="@{/styles/signin.css}"/>
+
+</head>
+
+<body>
 <p th:if="${loginError}" class="error">Wrong user or password</p>
-<form th:action="@{/login}" method="post">
-    <label for="username">Username</label>:
-    <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
-    <label for="password">Password</label>:
-    <input type="password" id="password" name="password" /> <br />
-    <input type="submit" value="Log in" />
+
+<form th:action="@{/login}" method="post" class="form-signin">
+    <h3 class="form-signin-heading">Tasks Management System</h3>
+    <label for="username" class="sr-only">Username</label>
+    <input type="text" id="username" class="form-control" name="username" autofocus="autofocus" /> <br />
+    <br>
+    <label for="password" class="sr-only">Password</label>
+    <input type="password" id="password" class="form-control" name="password" /> <br />
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
 </form>
+
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 
 </body>
 </html>

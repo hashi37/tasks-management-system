@@ -1,48 +1,85 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Task</title>
-    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Tasks Management System</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <!-- Custom styles for this template -->
+    <link th:rel="stylesheet" th:href="@{/styles/signin.css}"/>
+
 </head>
+
 <body>
 
-<table>
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>State</th>
-        <th>User assigned</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td th:text="${task.id}"></td>
-        <td th:text="${task.name}"></td>
-        <td th:text="${task.description}"></td>
-        <td th:text="${task.state}"></td>
-        <td th:text="${task.user.userLogin}"></td>
-    </tr>
-    </tbody>
-</table>
+<h2><span th:text="${appName}"></span></h2>
 
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>State</th>
+            <th>User assigned</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${task.id}"></td>
+            <td th:text="${task.name}"></td>
+            <td th:text="${task.description}"></td>
+            <td th:text="${task.state}"></td>
+            <td th:text="${task.user.userLogin}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
-<form action="#" th:action="@{/assignuser/}" th:object="${task}" method="post">
-    <label>New user name</label>
-    <!-input type="text" th:field="*{user.userLogin}" /-->
+<div class="form-outline mb-4">
+    <form action="#" th:action="@{/assignuser/}" th:object="${task}" method="post" class="form-signin">
+        <label>Assign task to following user</label>
+        <!-input type="text" th:field="*{user.userLogin}" /-->
 
-    <select class="form-control" id="userLogin" name="userLogin" th:field="*{user.userLogin}">
-        <option value="">Select user</option>
-        <option th:each="user : ${users}"
-                th:value="${user.userLogin}"
-                th:text="${user.userLogin}+' : '+${user.userLogin}"
-                th:field="*{user.userLogin}"></option>
-    </select>
+        <select class="form-control" id="userLogin" name="userLogin" th:field="*{user.userLogin}">
+            <option value="">Select user</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.userLogin}"
+                    th:text="${user.userLogin}"
+                    th:field="*{user.userLogin}"></option>
+        </select>
 
-    <input type="hidden" th:field="*{id}" />
-    <input type="submit" value="Submit" />
-</form>
+        <input type="hidden" th:field="*{id}" />
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block">Assign</button>
+    </form>
+</div>
+<br><br>
+<div class="container">
+    <footer class="bg-light text-center text-lg-start">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            <p><a th:href="@{/index}">Go to main page</a></p>
+        </div>
+
+        <div sec:authorize="isAuthenticated()">
+            Logged user name: <span sec:authentication="name">Best employee!</span>
+            <br>
+            Use roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_LEADER, ROLE_ADMIN]</span>
+            <br>
+        </div>
+    </footer>
+</div>
+
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 
 </body>
 </html>

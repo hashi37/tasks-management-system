@@ -1,28 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Tasks Management System</title>
-    <link th:href="@{/styles/style.css}" rel="stylesheet" />
-
-    <div sec:authorize="isAuthenticated()">
-        Logged user name: <span sec:authentication="name">Best employee!</span>
-        <br>
-        Use roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_LEADER, ROLE_ADMIN]</span>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
-    </div>
+    <!-- Bootstrap core CSS -->
+    <link th:rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css} "/>
+    <link th:href="@{/styles/starter.css}" rel="stylesheet" />
 
 </head>
 <body>
 
+<h3><span th:text="${appName}"></span></h3>
 
-<div th:switch="${tasks}" sec:authorize="hasRole('USER')">
-    <h2 th:case="null">No tasks assigned!</h2>
+<div th:switch="${tasks}" sec:authorize="hasRole('USER')" class="container">
+    <h3 th:case="null">No tasks assigned!</h3>
     <div th:case="*">
-        <h1><span th:text="${appName}"></span></h1>
-        <h2>Tasks</h2>
-        <table>
+        <table class="table table-striped">
+            <caption>Tasks</caption>
             <thead>
             <tr>
                 <th>Id</th>
@@ -48,12 +41,11 @@
 </div>
 
 
-<div th:switch="${alltasks}" sec:authorize="hasRole('LEADER')">
-    <h2 th:case="null">No tasks assigned!</h2>
+<div th:switch="${alltasks}" sec:authorize="hasRole('LEADER')"  class="container">
+    <h3 th:case="null">No tasks assigned!</h3>
     <div th:case="*">
-        <h1><span th:text="${appName}"></span></h1>
-        <h2>Tasks</h2>
-        <table>
+        <table class="table table-striped">
+            <caption>Tasks</caption>
             <thead>
             <tr>
                 <th>Id</th>
@@ -81,12 +73,11 @@
 </div>
 
 
-<div th:switch="${alltasks}" sec:authorize="hasRole('ADMIN')">
-    <h2 th:case="null">No tasks assigned!</h2>
+<div th:switch="${alltasks}" sec:authorize="hasRole('ADMIN')"  class="container">
+    <h3 th:case="null">No tasks assigned!</h3>
     <div th:case="*">
-        <h1><span th:text="${appName}"></span></h1>
-        <h2>Tasks</h2>
-        <table>
+        <table class="table table-striped">
+            <caption>Tasks</caption>
             <thead>
             <tr>
                 <th>Id</th>
@@ -109,8 +100,29 @@
             </tbody>
         </table>
     </div>
-    <p><a href="/addtaskform">Add new task</a></p>
+    <p><a th:href="@{/addtaskform}">Add new task</a></p>
 </div>
+
+<div class="container">
+    <footer class="bg-light text-center text-lg-start">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            <p><a th:href="@{/index}">Go to main page</a></p>
+        </div>
+
+        <div sec:authorize="isAuthenticated()">
+            Logged user name: <span sec:authentication="name">Best employee!</span>
+            <br>
+            Use roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_LEADER, ROLE_ADMIN]</span>
+            <br><br>
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+            <br>
+        </div>
+    </footer>
+</div>
+
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 
 </body>
 </html>
